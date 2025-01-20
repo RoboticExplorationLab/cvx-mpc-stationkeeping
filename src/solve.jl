@@ -27,9 +27,9 @@ function update_prob(system, x_initial_k, all_Ad_k, all_Bd_k, P_k, unstable_dire
     if(constraint_type == "euc")
 
         #tube constraint
-        for k=2:(N_h-1) #this was there before and works
+        #for k=2:(N_h-1) #this was there before and works
         #THIS WORKS and gives nice impluses. removes the noise. HIGH tube pose r
-        #for k=1:N_h 
+        for k=1:N_h 
            push!(cons, norm(X[1:3,k],2) <= tube_pose_r)
         
            push!(cons, norm(X[4:6,k],2) <= tube_vel_r)
@@ -54,7 +54,18 @@ function update_prob(system, x_initial_k, all_Ad_k, all_Bd_k, P_k, unstable_dire
 
     end
 
-    #Contingency-constraint (half-space)
+    #Contingency-constraint (half-space) (inequality)
+    # for k = 2:N_h
+                
+    #     #manifold goes to the right
+    #     manifold_constraint = X[:,k]'*unstable_directions_k[:,k]    
+
+    #     #used to just be >, but there was a warning about it 
+    #     push!(cons, manifold_constraint >= a)
+
+    # end
+
+    #strict equality
     for k = 2:N_h
                 
         #manifold goes to the right

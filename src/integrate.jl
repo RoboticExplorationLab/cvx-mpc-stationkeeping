@@ -247,3 +247,18 @@ function just_dynamics_integrate(system, x_0, period)
     return sol
     
 end
+
+
+#RK4 integrator with a zero order hold
+function RK4_integrator(system, x, u)
+
+    f1 = three_body_prob_dynamics_wcontrol_scaled_RK4(system, x, u)
+    f2 = three_body_prob_dynamics_wcontrol_scaled_RK4(system, x+0.5*Δt*f1, u)
+    f3 = three_body_prob_dynamics_wcontrol_scaled_RK4(system, x+0.5*Δt*f2, u)
+    f4 = three_body_prob_dynamics_wcontrol_scaled_RK4(system, x+ Δt*f3, u)
+
+    xnext = x + (Δt/6.0)*(f1+2*f2+2*f3+f4)
+
+    return xnext
+
+end

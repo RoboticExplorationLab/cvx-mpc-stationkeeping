@@ -132,3 +132,38 @@ function three_body_prob_dynamics_wcontrol_scaled(system, x)
     return ẋ_scaled
 
 end
+
+
+#inputs are in the custom scaled units
+
+function three_body_prob_dynamics_wcontrol_scaled_RK4(system, x, u)
+
+    q_original = zeros(eltype(x),3)
+    v_original = zeros(eltype(x),3)
+    u_original = zeros(eltype(x),3)
+    
+    q_original = x[1:3]/system.position_scale 
+    v_original = x[4:6]/system.velocity_scale
+    u_original = u/system.acceleration_scale
+    
+    x_original = [q_original; v_original; u_original]
+
+    ẋ_original = zeros(eltype(x),9)
+
+    #calculate the original xdot (no scaling)
+
+    #xoriginal is in the CR3BP units
+    ẋ_original = three_body_prob_dynamics_wcontrol(system, x_original)
+
+    #then scale the output
+    v_scaled = ẋ_original[1:3]*system.velocity_scale
+    
+    a_scaled = ẋ_original[4:6]*system.acceleration_scale
+
+    u_scaled = ẋ_original[7:9]*system.acceleration_scale
+
+    ẋ_scaled = [v_scaled; a_scaled]
+
+    return ẋ_scaled
+
+end

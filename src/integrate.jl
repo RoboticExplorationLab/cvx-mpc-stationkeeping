@@ -262,3 +262,39 @@ function RK4_integrator(system, x, u)
     return xnext
 
 end
+
+
+
+#integrator for the exit trajectories with a stop condition
+function just_dynamics_integrate_earth_moon_exit(system, x_0, period)
+
+    condition(u,t,integrator) = u[1] - 4.75e5
+    
+    affect!(integrator) = terminate!(integrator)
+     
+    cb = ContinuousCallback(condition, affect!)
+    
+    tspan = (0.0, period)
+    prob = ODEProblem(justdynamics_DFJL!, x_0, tspan, [system])
+    sol = solve(prob, TsitPap8(), abstol=1e-12, reltol=1e-12, callback=cb)
+    
+    return sol
+    
+end
+
+
+function just_dynamics_integrate_saturn_enceladus_exit(system, x_0, period)
+
+    condition(u,t,integrator) = u[1] - 240000
+    
+    affect!(integrator) = terminate!(integrator)
+     
+    cb = ContinuousCallback(condition, affect!)
+    
+    tspan = (0.0, period)
+    prob = ODEProblem(justdynamics_DFJL!, x_0, tspan, [system])
+    sol = solve(prob, TsitPap8(), abstol=1e-12, reltol=1e-12, callback=cb)
+    
+    return sol
+    
+end
